@@ -6,41 +6,33 @@ import { JokeCard } from "./JokeCard";
 export function JokeList(props) {
 	// let { displayJokes, getJokes } = useContext(JokeContext);
 	const [displayJokes, setDisplayJokes] = useState({ jokes: [] });
-	let removeJokesTimers = [];
+	let timer;
 
 	const removeFromDisplayJokes = () => {
-		console.log("remove", Date.now(), removeJokesTimers, displayJokes);
+		console.log("remove", displayJokes);
 
 		if (displayJokes.jokes.length > 0) {
-			const firstTimer = removeJokesTimers[0];
 			const removeJokes = displayJokes.jokes.map((displayJoke) => {
-				if (displayJoke.timer === firstTimer) {
-					displayJoke.timer = false;
+				if (displayJoke.status === "new") {
 					displayJoke.status = "removed";
 				}
 			});
-
-			const jokes = filterJokes(displayJokes.jokes, dontShowJokes);
-			console.log(displayJokes, jokes);
-			if (removeJokes.length > 0) removeJokes.pop();
-			clearTimeout(firstTimer);
+			clearTimeout(timer);
 		}
 	};
 
-	const get10Jocks = async () => {
+	const get10Jokes = async () => {
 		try {
 			let getJokes = await jokeService.get10Jokes(displayJokes.jokes);
 
-			const timer = setTimeout(() => {
+			timer = setTimeout(() => {
 				console.log("timer");
 				removeFromDisplayJokes();
 				// 8000
 			}, 21000);
 
-			removeJokesTimers.push(timer);
 			getJokes.forEach((joke) => {
 				joke.status = "new";
-				joke.timer = timer;
 			});
 			console.log("timer array", removeJokesTimers);
 
@@ -60,7 +52,6 @@ export function JokeList(props) {
 			(displayJoke) => displayJoke.id === jokeId
 		);
 
-		jokeToUpdate.timer = false;
 		jokeToUpdate.status = "flipped";
 
 		setDisplayJokes((prevState) => {
@@ -73,11 +64,11 @@ export function JokeList(props) {
 
 	useEffect(() => {
 		const timer = setTimeout(() => {
-			get10Jocks();
+			get10Jokes();
 			// 5000
 		}, 20000);
 		return () => {
-			removeJokesTimers.forEach((timer) => clearTimeout(timer));
+			clearTimeout(timer);
 			clearTimeout(timer);
 		};
 	});
