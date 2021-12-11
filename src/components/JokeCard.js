@@ -2,13 +2,14 @@ import React, { useState, useContext } from "react";
 // import { JokeContext } from "../contexts/jokeContext";
 import ReactCardFlip from "react-card-flip";
 
-export function JokeCard({ joke }) {
+export function JokeCard({ joke, updateJoke }) {
 	const [isFlipped, setFlipped] = useState(false);
 	// let { updateJoke } = useContext(JokeContext);
 
 	const handleClick = (event) => {
-		event.preventDefault();
+		event.stopPropagation();
 		setFlipped((prevState) => !prevState);
+		updateJoke(joke.id);
 	};
 
 	let CardStyle = {

@@ -13,9 +13,6 @@ async function get10Jokes(stateJokes) {
 	} catch (err) {
 		console.log(err);
 	}
-	// }
-
-	// if (tenJokes) console.log(OFFICIALURL + "/jokes/programming/ten");
 }
 
 export const jokeService = {
