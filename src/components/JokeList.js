@@ -52,14 +52,12 @@ export function JokeList(props) {
 			setAllJokes((prevState) => {
 				return [...allJokes, ...getJokes];
 			});
-			console.log(allJokes);
 		} catch (err) {
 			console.log(err);
 		}
 	};
 
 	useEffect(() => {
-		get10Jokes();
 		const getJokesInterval = setInterval(() => {
 			get10Jokes();
 		}, 5000);
@@ -67,7 +65,7 @@ export function JokeList(props) {
 			allJokes.forEach((displayJoke) => clearTimeout(displayJoke.timer));
 			clearInterval(getJokesInterval);
 		};
-	}, []);
+	});
 
 	const showJokes = (jokes) => {
 		return jokes.map((joke) => {
