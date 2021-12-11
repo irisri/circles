@@ -1,38 +1,51 @@
-.App {
-  text-align: center;
+* {
+	box-sizing: border-box;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+html {
+	font-family: HeeboRegular, OpenSans, sans-serif;
+	font-size: 16px;
+	scroll-behavior: smooth;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.main-container {
+	margin: 30px auto;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+	margin: 0;
+	font-weight: normal;
+	padding: 0;
 }
 
-.App-link {
-  color: #61dafb;
+header {
+	text-align: center;
+	margin-bottom: 50px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.flex {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.wrap {
+	flex-wrap: wrap;
+}
+
+.cardFront {
+	background-color: #991a00;
+	text-align: center;
+	line-height: 150px;
+	color: white;
+}
+
+.cardBack p:last-of-type {
+	font-weight: bold;
 }
