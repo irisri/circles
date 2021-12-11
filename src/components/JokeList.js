@@ -49,7 +49,7 @@ export function JokeList(props) {
 				joke.timer = removeJokeTimer;
 			});
 
-			setDisplayJokes((prevState) => {
+			setAllJokes((prevState) => {
 				return [...allJokes, ...getJokes];
 			});
 			console.log(allJokes);
