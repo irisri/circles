@@ -3,76 +3,71 @@ import { jokeService } from "../services/jokeService";
 import { JokeCard } from "./JokeCard";
 
 export function JokeList(props) {
-	const [displayJokes, setDisplayJokes] = useState({ jokes: [] });
+	const [allJokes, setAllJokes] = useState([]);
+
+	const updateJoke = (jokeId, statusString) => {
+		const jokeToUpdateIndex = allJokes.findIndex(
+			(displayJoke) => displayJoke.id === jokeId
+		);
+
+		console.log(jokeToUpdateIndex, statusString);
+		if (jokeToUpdateIndex !== -1) {
+			clearTimeout(allJokes[jokeToUpdateIndex].timer);
+			let updatedJoke = allJokes[jokeToUpdateIndex];
+			updatedJoke = {
+				...updatedJoke,
+				status: statusString,
+				timer: false,
+			};
+
+			setAllJokes(
+				allJokes.map((displayJoke) => {
+					displayJoke.if === jokeId ? updatedJoke : displayJoke;
+				})
+			);
+		}
+	};
 
 	const removeFromDisplayJokes = (jokeId) => {
-		console.log("remove", jokeId);
+		console.log("remove", jokeId, allJokes);
 
-		if (displayJokes.jokes.length > 0) {
-			const removeJokes = displayJokes.jokes.map((displayJoke) => {
-				if (displayJoke.id === jokeId) {
-					clearTimeout(displayJoke.timer);
-					displayJoke.status = "removed";
-					displayJoke.timer = false;
-				}
-			});
-
-			setDisplayJokes({ jokes: removeJokes });
+		if (allJokes.length > 0) {
+			updateJoke(jokeId, "removed");
 		}
 	};
 
 	const get10Jokes = async () => {
 		console.log("get");
 		try {
-			let getJokes = await jokeService.get10Jokes(displayJokes.jokes);
+			let getJokes = await jokeService.get10Jokes(allJokes);
 			getJokes.forEach((joke) => {
 				const removeJokeTimer = setTimeout(() => {
-					console.log("timer", joke.id);
+					console.log("timer", joke);
 					removeFromDisplayJokes(joke.id);
-					// 8000
-				}, 21000);
+				}, 3000);
 				joke.status = "new";
 				joke.timer = removeJokeTimer;
 			});
 
 			setDisplayJokes((prevState) => {
-				return {
-					jokes: [...prevState.jokes, ...getJokes],
-				};
+				return [...allJokes, ...getJokes];
 			});
+			console.log(allJokes);
 		} catch (err) {
 			console.log(err);
 		}
 	};
 
-	const updateJoke = (jokeId) => {
-		const jokeToUpdateIndex = displayJokes.jokes.findIndex((displayJoke) => {
-			return displayJoke.id === jokeId;
-		});
-
-		const jokesUpdated = displayJokes.jokes;
-		jokesUpdated[jokeToUpdateIndex].status = "flipped";
-		clearTimeout(jokesUpdated[jokeToUpdateIndex].timer);
-		jokesUpdated[jokeToUpdateIndex].timer = false;
-		setDisplayJokes((prevState) => {
-			return {
-				jokes: jokesUpdated,
-			};
-		});
-	};
-
 	useEffect(() => {
+		get10Jokes();
 		const getJokesInterval = setInterval(() => {
 			get10Jokes();
-			// 5000
-		}, 20000);
+		}, 5000);
 		return () => {
-			displayJokes.jokes.forEach((displayJoke) =>
-				clearTimeout(displayJoke.timer)
-			);
+			allJokes.forEach((displayJoke) => clearTimeout(displayJoke.timer));
 			clearInterval(getJokesInterval);
 		};
-	});
+	}, []);
 
 	const showJokes = (jokes) => {
 		return jokes.map((joke) => {
@@ -81,10 +76,10 @@ export function JokeList(props) {
 		});
 	};
 
-	if (displayJokes.jokes.length > 0) {
+	if (allJokes.length > 0) {
 		return (
 			<div>
-				<div className="flex wrap">{showJokes(displayJokes.jokes)}</div>
+				<div className="flex wrap">{showJokes(allJokes)}</div>
 			</div>
 		);
 	} else {
