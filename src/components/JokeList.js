@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { jokeService } from "../services/jokeService";
-// import { JokeContext } from "../contexts/jokeContext";
 import { JokeCard } from "./JokeCard";
 
 export function JokeList(props) {
-	// let { displayJokes, getJokes } = useContext(JokeContext);
 	const [displayJokes, setDisplayJokes] = useState({ jokes: [] });
-	let timer;
+	let removeJokeTimer;
 
 	const removeFromDisplayJokes = () => {
 		console.log("remove", displayJokes);
@@ -17,24 +15,26 @@ export function JokeList(props) {
 					displayJoke.status = "removed";
 				}
 			});
-			clearTimeout(timer);
+
+			setDisplayJokes({ jokes: removeJokes });
+			clearTimeout(removeJokeTimer);
 		}
 	};
 
 	const get10Jokes = async () => {
+		console.log("get");
 		try {
 			let getJokes = await jokeService.get10Jokes(displayJokes.jokes);
 
-			timer = setTimeout(() => {
+			removeJokeTimer = setTimeout(() => {
 				console.log("timer");
 				removeFromDisplayJokes();
 				// 8000
 			}, 21000);
-
+			console.log(removeJokeTimer);
 			getJokes.forEach((joke) => {
 				joke.status = "new";
 			});
-			console.log("timer array", removeJokesTimers);
 
 			setDisplayJokes((prevState) => {
 				return {
@@ -47,36 +47,39 @@ export function JokeList(props) {
 	};
 
 	const updateJoke = (jokeId) => {
-		console.log(jokeId, displayJokes);
-		const jokeToUpdate = displayJokes.jokes.find(
-			(displayJoke) => displayJoke.id === jokeId
-		);
-
-		jokeToUpdate.status = "flipped";
-
+		const jokeToUpdateIndex = displayJokes.jokes.findIndex((displayJoke) => {
+			return displayJoke.id === jokeId;
+		});
+		const jokesUpdated = displayJokes.jokes;
+		jokesUpdated[jokeToUpdateIndex].status = "flipped";
 		setDisplayJokes((prevState) => {
 			return {
-				jokes: [...prevState.jokes, jokeToUpdate],
+				jokes: jokesUpdated,
 			};
 		});
-		console.log(displayJokes);
 	};
 
 	useEffect(() => {
-		const timer = setTimeout(() => {
+		const getJokesInterval = setInterval(() => {
 			get10Jokes();
 			// 5000
 		}, 20000);
 		return () => {
-			clearTimeout(timer);
-			clearTimeout(timer);
+			clearTimeout(removeJokeTimer);
+			clearTimeout(getJokesInterval);
 		};
 	});
 
 	const showJokes = (jokes) => {
 		return jokes.map((joke) => {
 			if (joke.status !== "removed")
-				return <JokeCard key={joke.id} joke={joke} updateJoke={updateJoke} />;
+				return (
+					<JokeCard
+						key={joke.id}
+						joke={joke}
+						onclick={() => updateJoke(joke.id)}
+					/>
+				);
 		});
 	};
 
