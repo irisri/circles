@@ -1,5 +1,5 @@
 import "./App.css";
-import { JokeList } from "./components/JokeList";
+import { JokeContainer } from "./components/JokeContainer";
 
 function App() {
 	return (
@@ -8,7 +8,7 @@ function App() {
 				<h1>Iris Rifold - Circles</h1>
 			</header>
 			<div>
-				<JokeList />
+				<JokeContainer />
 			</div>
 		</div>
 	);

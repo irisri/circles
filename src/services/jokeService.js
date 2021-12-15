@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const OFFICIALURL = "https://official-joke-api.appspot.com";
+// The first one don't work - Server Error
+// const OFFICIALURL = "https://official-joke-api.appspot.com";
 const HEROKUURL = "https://karljoke.herokuapp.com";
 
 async function get10Jokes(stateJokes) {
@@ -9,7 +10,6 @@ async function get10Jokes(stateJokes) {
 		return tenJokes.data.filter(
 			(joke) => !stateJokes.find((stateJoke) => joke.id === stateJoke.id)
 		);
-		return tenJokes.data;
 	} catch (err) {
 		console.log(err);
 	}
